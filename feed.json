@@ -1,7 +1,12 @@
 [
-    {"title": "Welcome to my custom feed!", "link": "https://example.com"},
-    {"title": "Latest update: Project X is live 🚀", "link": "https://example.com/project-x"},
-    {"title": "Check out our blog", "link": "https://example.com/blog"},
-    {"title": "New feature added: Auto-scroll feed", "link": "https://example.com/features"},
-    {"title": "Stay tuned for more updates!", "link": "https://example.com/news"}
+    {"title": "TechCrunch - Startup & Tech News", "link": "https://techcrunch.com"},
+    {"title": "The Verge - Consumer Tech & Culture", "link": "https://www.theverge.com"},
+    {"title": "Wired - Technology & Science", "link": "https://www.wired.com"},
+    {"title": "Ars Technica - Deep Tech Analysis", "link": "https://arstechnica.com"},
+    {"title": "Mashable Tech - Digital Trends", "link": "https://mashable.com/tech"},
+    {"title": "Engadget - Gadget Reviews & News", "link": "https://www.engadget.com"},
+    {"title": "CNET - Tech Reviews & Guides", "link": "https://www.cnet.com"},
+    {"title": "VentureBeat - AI & Enterprise Tech", "link": "https://venturebeat.com"},
+    {"title": "Hacker News - Developer Community", "link": "https://news.ycombinator.com"},
+    {"title": "MIT Technology Review - Emerging Tech", "link": "https://www.technologyreview.com"}
 ]
