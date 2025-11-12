@@ -55,7 +55,7 @@ def parse_date(article):
 
 articles.sort(key=parse_date, reverse=True)
 
-with open("WBG_APAC.md", "w", encoding="utf-8") as f:
+with open("index.md", "w", encoding="utf-8") as f:
     f.write("# 🌏 Wide Bandgap Semiconductor Updates - APAC Region\n\n")
     f.write(f"_Last updated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}_\n\n")
 
