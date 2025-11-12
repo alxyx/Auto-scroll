@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Autoscroll Feed</title>
+    <title>Custom Autoscroll Feed</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,14 +24,17 @@
             position: relative;
         }
         .feed {
-            position: absolute; /* IMPORTANT for scrolling */
-            top: 0;
-            width: 100%;
-        }
-        .feed-item {
-            padding: 10px;
+                       padding: 10px;
             border-bottom: 1px solid #eee;
             font-size: 14px;
+        }
+        .feed-item a {
+            text-decoration: none;
+            color: #0073e6;
+            font-weight: bold;
+        }
+        .feed-item a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -45,22 +48,24 @@
         let scrollPosition = 0;
 
         async function loadFeed() {
-            const username = 'alxyx'; // ✅ Your GitHub username
-            const repo = 'RSS-tester'; // ✅ Your repo name
-            const response = await fetch('feed.json');
-            const commits = await response.json();
-        
-    feedElement.innerHTML = '';
-    items.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'feed-item';
-        div.innerHTML = `${item.link}${item.title}</a>`;
-        feedElement.appendChild(div);
-    });
+            try {
+                const response = await fetch('feed.json'); // Custom JSON file in your repo
+                const items = await response.json();
 
-    startAutoScroll();
-}
+                feedElement.innerHTML = '';
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'feed-item';
+                    div.innerHTML = `${item.link}${item.title}</a>`;
+                    feedElement.appendChild(div);
+                });
 
+                startAutoScroll();
+            } catch (error) {
+                console.error('Error loading feed:', error);
+                feedElement.innerHTML = '<div class="feed-item">Failed to load feed.</div>';
+            }
+        }
 
         function startAutoScroll() {
             const containerHeight = document.querySelector('.feed-container').offsetHeight;
@@ -79,4 +84,3 @@
     </script>
 </body>
 </html>
-
