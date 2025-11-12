@@ -8,11 +8,13 @@
         body {
             font-family: Arial, sans-serif;
             background: #f9f9f9;
+            display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
+
         .feed-container {
             width: 400px;
             height: 250px;
@@ -21,34 +23,38 @@
             background: #fff;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             position: relative;
-        }
-        .feed {
-            position: absolute;
+        position: absolute;
             top: 0;
             width: 100%;
-        {
+        }
+
+        .feed-item {
             padding: 10px;
             border-bottom: 1px solid #eee;
             font-size: 14px;
         }
+
         .feed-item a {
             text-decoration: none;
             color: #0073e6;
             font-weight: bold;
         }
+
         .feed-item a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="feed-container">
+    <div class="feed-container" id="feed-container">
         <div class="feed" id="feed"></div>
     </div>
 
     <script>
         const feedElement = document.getElementById('feed');
+        const container = document.getElementById('feed-container');
         let scrollPosition = 0;
+        let scrollInterval;
 
         async function loadFeed() {
             try {
@@ -71,10 +77,10 @@
         }
 
         function startAutoScroll() {
-            const containerHeight = document.querySelector('.feed-container').offsetHeight;
+            const containerHeight = container.offsetHeight;
             const feedHeight = feedElement.scrollHeight;
 
-            setInterval(() => {
+            scrollInterval = setInterval(() => {
                 scrollPosition -= 1; // scroll speed
                 if (Math.abs(scrollPosition) >= feedHeight) {
                     scrollPosition = containerHeight; // reset scroll
@@ -82,6 +88,10 @@
                 feedElement.style.top = scrollPosition + 'px';
             }, 30); // adjust speed here
         }
+
+        // Pause on hover
+        container.addEventListener('mouseenter', () => clearInterval(scrollInterval));
+        container.addEventListener('mouseleave', startAutoScroll);
 
         loadFeed();
     </script>
