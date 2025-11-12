@@ -2,6 +2,7 @@ import feedparser
 from datetime import datetime
 import time
 
+# RSS feed URLs
 rss_feeds = [
     "https://www.eetasia.com/feed/",
     "https://www.semiconductor-digest.com/feed/",
@@ -14,11 +15,13 @@ rss_feeds = [
     "https://www.electronicsforu.com/feed",
 ]
 
+# Keywords to filter articles
 keywords = [
     "wide bandgap", "SiC", "GaN", "semiconductor",
     "power electronics", "ultra wide bandgap", "WBG", "UWBG", "compound semiconductor"
 ]
 
+# Safe RSS parsing with retries
 def safe_parse(feed_url, retries=3, delay=5):
     for attempt in range(retries):
         try:
@@ -29,6 +32,7 @@ def safe_parse(feed_url, retries=3, delay=5):
     print(f"Failed to fetch {feed_url} after {retries} attempts.")
     return None
 
+# Collect articles
 articles = []
 for feed_url in rss_feeds:
     feed = safe_parse(feed_url)
@@ -47,6 +51,7 @@ for feed_url in rss_feeds:
                 "published": published
             })
 
+# Sort by published date
 def parse_date(article):
     try:
         return datetime.strptime(article["published"], "%a, %d %b %Y %H:%M:%S %Z")
@@ -55,19 +60,50 @@ def parse_date(article):
 
 articles.sort(key=parse_date, reverse=True)
 
-with open("index.md", "w", encoding="utf-8") as f:
-    f.write("# 🌏 Wide Bandgap Semiconductor Updates - APAC Region\n\n")
-    f.write(f"_Last updated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}_\n\n")
+# Pagination: 10 articles per page
+page_size = 10
+pages = [articles[i:i + page_size] for i in range(0, len(articles), page_size)]
+
+# Generate HTML with autoscroll
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write("<!DOCTYPE html><html><head><meta charset='UTF-8'><title>WBG Updates</title>")
+    f.write("<style>body{font-family:Arial;margin:20px;} h1{color:#333;} hr{border:none;border-top:1px solid #ccc;margin:10px 0;} </style>")
+    f.write("</head><body>")
+    f.write("<h1>🌏 Wide Bandgap Semiconductor Updates - APAC Region</h1>")
+    f.write(f"<p><em>Last updated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}</em></p>")
 
     if not articles:
-        f.write("No updates found for the selected keywords.\n\n")
-        f.write("## [Sample WBG Update SiC Expansion in Asia\n")
-        f.write("**Published:** Sample Date\n\n")
-        f.write("This is a sample article to demonstrate the update feed.\n\n")
-        f.write("---\n\n")
+        f.write("<p>No updates found for the selected keywords.</p>")
+        f.write("<h2>Sample WBG Update SiC Expansion in Asia</h2>")
+        f.write("<p><strong>Published:</strong> Sample Date</p>")
+        f.write("<p>This is a sample article to demonstrate the update feed.</p><hr>")
     else:
-        for article in articles:
-            f.write(f"## [{article['title']}]({article['link']})\n")
-            f.write(f"**Published:** {article['published']}\n\n")
-            f.write(f"{article['summary']}\n\n")
-            f.write("---\n\n")
+        for page_num, page in enumerate(pages, start=1):
+            f.write(f"<div class='page' id='page-{page_num}' style='display:none;'>")
+            for article in page:
+                f.write(f"<h2>{article[{article['title']}</a></h2>")
+                f.write(f"<p><strong>Published:</strong> {article['published']}</p>")
+                f.write(f"<p>{article['summary']}</p><hr>")
+            f.write("</div>")
+
+    # JavaScript for autoscroll
+    f.write(f"""
+    <script>
+    let currentPage = 1;
+    const totalPages = {len(pages)};
+    function showPage(page) {{
+        document.querySelectorAll('.page').forEach(div => div.style.display = 'none');
+        document.getElementById('page-' + page).style.display = 'block';
+    }}
+    function autoScroll() {{
+        showPage(currentPage);
+        currentPage++;
+        if (currentPage > totalPages) currentPage = 1;
+    }}
+    showPage(currentPage);
+    setInterval(autoScroll, 10000); // Change page every 10 seconds
+    </script>
+    """)
+    f.write("</body></html>")
+
+print("✅ HTML file 'index.html' generated with pagination and autoscroll.")
