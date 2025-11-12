@@ -64,10 +64,10 @@ articles.sort(key=parse_date, reverse=True)
 page_size = 10
 pages = [articles[i:i + page_size] for i in range(0, len(articles), page_size)]
 
-# Generate HTML with autoscroll
+# Generate HTML with autoscroll + navigation
 with open("index.html", "w", encoding="utf-8") as f:
     f.write("<!DOCTYPE html><html><head><meta charset='UTF-8'><title>WBG Updates</title>")
-    f.write("<style>body{font-family:Arial;margin:20px;} h1{color:#333;} hr{border:none;border-top:1px solid #ccc;margin:10px 0;} </style>")
+    f.write("<style>body{font-family:Arial;margin:20px;} h1{color:#333;} hr{border:none;border-top:1px solid #ccc;margin:10px 0;} .nav{margin-top:20px;} button{padding:10px;margin:5px;}</style>")
     f.write("</head><body>")
     f.write("<h1>🌏 Wide Bandgap Semiconductor Updates - APAC Region</h1>")
     f.write(f"<p><em>Last updated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}</em></p>")
@@ -86,7 +86,15 @@ with open("index.html", "w", encoding="utf-8") as f:
                 f.write(f"<p>{article['summary']}</p><hr>")
             f.write("</div>")
 
-    # JavaScript for autoscroll
+    # Navigation buttons
+    f.write("""
+    <div class='nav'>
+        <button onclick='prevPage()'>⬅ Prev</button>
+        <button onclick='nextPage()'>Next ➡</button>
+    </div>
+    """)
+
+    # JavaScript for autoscroll + manual navigation
     f.write(f"""
     <script>
     let currentPage = 1;
@@ -100,10 +108,19 @@ with open("index.html", "w", encoding="utf-8") as f:
         currentPage++;
         if (currentPage > totalPages) currentPage = 1;
     }}
+    function nextPage() {{
+        currentPage++;
+        if (currentPage > totalPages) currentPage = 1;
+        showPage(currentPage);
+    }}
+    function prevPage() {{
+        currentPage--;
+        if (currentPage < 1) currentPage = totalPages;
+        showPage(currentPage);
+    }}
     showPage(currentPage);
     setInterval(autoScroll, 10000); // Change page every 10 seconds
     </script>
     """)
     f.write("</body></html>")
 
-print("✅ HTML file 'index.html' generated with pagination and autoscroll.")
